@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Kayra Tech Shop - Modern Mağaza</title>
+    <title>Kayra Tech Shop - Tam Fonksiyonlu Mağaza</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,6 +15,7 @@
             color: white;
             text-align: center;
             padding: 30px 10px;
+            position: relative;
         }
 
         header h1 {
@@ -23,9 +24,108 @@
             letter-spacing: 2px;
         }
 
-        header p {
-            margin: 10px 0 0 0;
-            opacity: 0.8;
+        .bildirim-kutusu {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #10b981;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2000;
+        }
+
+        .bildirim-kutusu.goster {
+            top: 20px;
+        }
+
+        .sepet-butonu {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            background-color: #2563eb;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+
+        .sepet-butonu:hover {
+            background-color: #1d4ed8;
+        }
+
+        .sepet-paneli {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -4px 0 10px rgba(0,0,0,0.15);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sepet-paneli.acik {
+            right: 0;
+        }
+
+        .sepet-kapat {
+            text-align: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .sepet-urunler {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .sepet-urun-satir {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+        }
+
+        /* SİLME BUTONU STİLİ */
+        .urun-sil-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .urun-sil-btn:hover {
+            background-color: #dc2626;
+        }
+
+        .toplam-alan {
+            border-top: 2px solid #1e293b;
+            padding-top: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
         }
 
         .container {
@@ -101,6 +201,8 @@
             border-radius: 6px;
             font-weight: bold;
             transition: background-color 0.2s;
+            cursor: pointer;
+            user-select: none;
         }
 
         .buton:hover {
@@ -119,10 +221,25 @@
 </head>
 <body>
 
+    <div class="bildirim-kutusu" id="bildirimKutusu">
+        ✅ Ürün başarıyla sepetinize eklendi!
+    </div>
+
     <header>
         <h1>⚡ KAYRA TECH SHOP</h1>
         <p>Geleceğin Teknolojisi, Bugün Kapınızda</p>
+        <div class="sepet-butonu" id="sepetButon">🛒 Sepetim (<span id="sepetSayac">0</span>)</div>
     </header>
+
+    <div class="sepet-paneli" id="sepetPaneli">
+        <div class="sepet-kapat" id="sepetKapat">❌</div>
+        <h3>🛒 Sepetinizdeki Ürünler</h3>
+        <div class="sepet-urunler" id="sepetUrunler"></div>
+        <div class="toplam-alan">
+            <span>Toplam:</span>
+            <span id="toplamFiyat">0 TL</span>
+        </div>
+    </div>
 
     <div class="container">
         <h2>🔥 Haftanın Trend Ürünleri</h2>
@@ -135,7 +252,7 @@
                     <h3>Pro Gaming Laptop</h3>
                     <p>RTX Ekran kartlı, 32GB RAM'li hız canavarı.</p>
                     <div class="fiyat">45.999 TL</div>
-                    <a href="#" class="buton">🛒 Sepete Ekle</a>
+                    <div class="buton urun-ekle" data-ad="Pro Gaming Laptop" data-fiyat="45999">🛒 Sepete Ekle</div>
                 </div>
             </div>
 
@@ -145,7 +262,7 @@
                     <h3>Ultra Smart Phone</h3>
                     <p>200 MP kameralı, yapay zekalı amiral gemisi.</p>
                     <div class="fiyat">38.500 TL</div>
-                    <a href="#" class="buton">🛒 Sepete Ekle</a>
+                    <div class="buton urun-ekle" data-ad="Ultra Smart Phone" data-fiyat="38500">🛒 Sepete Ekle</div>
                 </div>
             </div>
 
@@ -155,7 +272,7 @@
                     <h3>ANC Kulaküstü Kulaklık</h3>
                     <p>Aktif gürültü engelleyici ve 60 saat pil ömrü.</p>
                     <div class="fiyat">5.400 TL</div>
-                    <a href="#" class="buton">🛒 Sepete Ekle</a>
+                    <div class="buton urun-ekle" data-ad="ANC Kulaklık" data-fiyat="5400">🛒 Sepete Ekle</div>
                 </div>
             </div>
 
@@ -168,16 +285,71 @@
     </footer>
 
     <script>
-        let sepetSayisi = 0;
-        const butonlar = document.querySelectorAll('.buton');
+        let sepet = [];
+        let toplam = 0;
 
-        butonlar.forEach(buton => {
-            buton.addEventListener('click', function(event) {
-                event.preventDefault(); 
-                sepetSayisi = sepetSayisi + 1;
-                alert("Ürün başarıyla sepete eklendi! Toplam ürün: " + sepetSayisi);
+        const sepetButon = document.getElementById('sepetButon');
+        const sepetPaneli = document.getElementById('sepetPaneli');
+        const sepetKapat = document.getElementById('sepetKapat');
+        const sepetUrunlerKutusu = document.getElementById('sepetUrunler');
+        const sepetSayac = document.getElementById('sepetSayac');
+        const toplamFiyatEtiketi = document.getElementById('toplamFiyat');
+        const eklemeButonlari = document.querySelectorAll('.urun-ekle');
+        const bildirimKutusu = document.getElementById('bildirimKutusu');
+
+        sepetButon.addEventListener('click', () => sepetPaneli.classList.add('acik'));
+        sepetKapat.addEventListener('click', () => sepetPaneli.classList.remove('acik'));
+
+        eklemeButonlari.forEach(buton => {
+            buton.addEventListener('click', function() {
+                const urunAd = this.getAttribute('data-ad');
+                const urunFiyat = parseInt(this.getAttribute('data-fiyat'));
+
+                sepet.push({ ad: urunAd, fiyat: urunFiyat });
+                toplam += urunFiyat;
+
+                guncelleSepetEkranı();
+                bildirimGoster();
             });
         });
+
+        // ÜRÜN SİLME FONKSİYONU
+        function urunSil(index) {
+            // Silinecek ürünün fiyatını toplamdan düşüyoruz
+            toplam -= sepet[index].fiyat;
+            // Ürünü sepet dizisinden çıkartıyoruz
+            sepet.splice(index, 1);
+            
+            // Ekranı yeniden güncelliyoruz
+            guncelleSepetEkranı();
+        }
+
+        function guncelleSepetEkranı() {
+            sepetSayac.innerText = sepet.length;
+            toplamFiyatEtiketi.innerText = toplam.toLocaleString('tr-TR') + " TL";
+
+            sepetUrunlerKutusu.innerHTML = "";
+            sepet.forEach((urun, index) => {
+                const satir = document.createElement('div');
+                satir.className = 'sepet-urun-satir';
+                // Her ürünün yanına "Sil" butonu ekliyoruz ve ona tıklayınca hangi sıradaki ürünse onu sildiriyoruz
+                satir.innerHTML = `
+                    <div>
+                        <span>${urun.ad}</span><br>
+                        <small style="color:#2563eb;">${urun.fiyat.toLocaleString('tr-TR')} TL</small>
+                    </div>
+                    <button class="urun-sil-btn" onclick="urunSil(${index})">Sil</button>
+                `;
+                sepetUrunlerKutusu.appendChild(satir);
+            });
+        }
+
+        function bildirimGoster() {
+            bildirimKutusu.classList.add('goster');
+            setTimeout(() => {
+                bildirimKutusu.classList.remove('goster');
+            }, 2000);
+        }
     </script>
 
 </body>
