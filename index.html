@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Kayra Tech Shop - Gelişmiş Mağaza</title>
+    <title>Kayra Tech Shop - Full Sipariş Entegrasyonlu</title>
     <style>
         :root {
             --bg-color: #f4f7f6;
@@ -33,7 +33,6 @@
             text-align: center;
             padding: 30px 10px;
             position: relative;
-            transition: background-color 0.3s;
         }
 
         header h1 {
@@ -53,7 +52,6 @@
             cursor: pointer;
             font-weight: bold;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            user-select: none;
         }
 
         .sepet-butonu {
@@ -84,10 +82,8 @@
             outline: none;
             background-color: var(--card-bg);
             color: var(--text-color);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         }
 
-        /* SEPET PANELİ VE KUPON ALANI */
         .sepet-paneli {
             position: fixed;
             top: 0;
@@ -161,10 +157,28 @@
             font-weight: bold;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 10px;
         }
 
-        /* POPUP / MODAL (ÜRÜN DETAY PENCERESİ) */
+        /* SİPARİŞİ TAMAMLA BUTONU */
+        .siparis-tamamla-btn {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.2s;
+        }
+
+        .siparis-tamamla-btn:hover {
+            background-color: #059669;
+        }
+
+        /* ORTAK MODAL TASARIMI */
         .modal-arka-plan {
             display: none;
             position: fixed;
@@ -187,7 +201,6 @@
             width: 90%;
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
             position: relative;
-            text-align: center;
         }
 
         .modal-kapat {
@@ -198,12 +211,27 @@
             cursor: pointer;
         }
 
-        .modal-icerik img {
-            width: 100%;
-            max-height: 250px;
-            object-fit: cover;
-            border-radius: 8px;
+        /* FORM ELEMANLARI */
+        .form-grup {
             margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-grup label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .form-grup input, .form-grup textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            box-sizing: border-box;
         }
 
         .container {
@@ -226,17 +254,11 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             width: 280px;
             overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
         }
 
         .urun-kart.gizle {
             display: none !important;
-        }
-
-        .urun-kart:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
 
         .urun-kart img {
@@ -264,7 +286,6 @@
             padding: 10px;
             border-radius: 6px;
             font-weight: bold;
-            cursor: pointer;
         }
 
         .bildirim-kutusu {
@@ -301,12 +322,34 @@
     </div>
 
     <div class="modal-arka-plan" id="detayModal">
-        <div class="modal-icerik">
+        <div class="modal-icerik" style="text-align: center;">
             <span class="modal-kapat" id="modalKapat">❌</span>
-            <img id="modalResim" src="" alt="">
+            <img id="modalResim" src="" style="width:100%; max-height:250px; object-fit:cover; border-radius:8px; margin-bottom:15px;">
             <h3 id="modalBaslik">Ürün Adı</h3>
             <p id="modalAciklama">Detaylar...</p>
             <div class="fiyat" id="modalFiyat">0 TL</div>
+        </div>
+    </div>
+
+    <div class="modal-arka-plan" id="siparisModal">
+        <div class="modal-icerik">
+            <span class="modal-kapat" id="siparisModalKapat">❌</span>
+            <h3 style="text-align: center; margin-top: 0;">📦 Teslimat ve Ödeme Bilgileri</h3>
+            <form id="siparisFormu" onsubmit="siparişiTamamla(event)">
+                <div class="form-grup">
+                    <label>Ad Soyad:</label>
+                    <input type="text" required placeholder="Kayra Oruç">
+                </div>
+                <div class="form-grup">
+                    <label>Teslimat Adresi:</label>
+                    <textarea required rows="3" placeholder="Mahalle, Sokak, No..."></textarea>
+                </div>
+                <div class="form-grup">
+                    <label>Kart Numarası (Test için rastgele girin):</label>
+                    <input type="text" required maxlength="16" placeholder="0000 0000 0000 0000">
+                </div>
+                <button type="submit" class="siparis-tamamla-btn" style="width: 100%; margin-top: 10px;">🔒 Güvenli Siparişi Onayla</button>
+            </form>
         </div>
     </div>
 
@@ -332,22 +375,23 @@
         </div>
 
         <div class="toplam-alan">
-            <div style="display:flex; justify-content:space-between; font-size: 0.9rem; color:#888;" id="indirimSatiri">
+            <div style="display:flex; justify-content:space-between; font-size: 0.9rem; color:#888;">
                 <span>İndirim:</span>
                 <span id="indirimMiktari">0 TL</span>
             </div>
-            <div style="display:flex; justify-content:space-between;">
+            <div style="display:flex; justify-content:space-between; margin-bottom: 5px;">
                 <span>Toplam:</span>
                 <span id="toplamFiyat">0 TL</span>
             </div>
+            <button class="siparis-tamamla-btn" id="satinalBtn">Siparişi Tamamla ➔</button>
         </div>
     </div>
 
     <div class="container">
-        <h2>🔥 Haftanın Trend Ürünleri (Detay için ürüne tıkla!)</h2>
+        <h2>🔥 Haftanın Trend Ürünleri</h2>
         
         <div class="urun-listesi">
-            <div class="urun-kart kart-tikla" data-ad="Pro Gaming Laptop" data-detay="Intel i9 işlemci, RTX 4090 Ekran Kartı, 32GB DDR5 RAM ve 1TB NVMe SSD ile oyunlarda maksimum FPS garanti!" data-resim="https://picsum.photos/id/0/400/300">
+            <div class="urun-kart kart-tikla" data-ad="Pro Gaming Laptop" data-detay="Intel i9 işlemci, RTX 4090 Ekran Kartı, 32GB DDR5 RAM." data-resim="https://picsum.photos/id/0/400/300">
                 <img src="https://picsum.photos/id/0/300/200" alt="Laptop">
                 <div class="urun-detay">
                     <h3>Pro Gaming Laptop</h3>
@@ -356,7 +400,7 @@
                 </div>
             </div>
 
-            <div class="urun-kart kart-tikla" data-ad="Ultra Smart Phone" data-detay="200 Megapiksel yapay zeka destekli kamera, 120Hz AMOLED ekran, 5000 mAh batarya ve 120W süper hızlı şarj desteği." data-resim="https://picsum.photos/id/160/400/300">
+            <div class="urun-kart kart-tikla" data-ad="Ultra Smart Phone" data-detay="200 Megapiksel yapay zeka destekli kamera, 120Hz AMOLED ekran." data-resim="https://picsum.photos/id/160/400/300">
                 <img src="https://picsum.photos/id/160/300/200" alt="Telefon">
                 <div class="urun-detay">
                     <h3>Ultra Smart Phone</h3>
@@ -365,7 +409,7 @@
                 </div>
             </div>
 
-            <div class="urun-kart kart-tikla" data-ad="ANC Kulaküstü Kulaklık" data-detay="Yüksek çözünürlüklü ses kalitesi, hibrit aktif gürültü engelleme (ANC), şeffaf mod ve tek şarjla 60 saate varan müzik keyfi." data-resim="https://picsum.photos/id/48/400/300">
+            <div class="urun-kart kart-tikla" data-ad="ANC Kulaküstü Kulaklık" data-detay="Yüksek çözünürlüklü ses kalitesi, hibrit aktif gürültü engelleme (ANC)." data-resim="https://picsum.photos/id/48/400/300">
                 <img src="https://picsum.photos/id/48/300/200" alt="Kulaklık">
                 <div class="urun-detay">
                     <h3>ANC Kulaküstü Kulaklık</h3>
@@ -383,7 +427,7 @@
     <script>
         let sepet = [];
         let anaToplam = 0;
-        let indirimOrani = 0; // % olarak tutulacak
+        let indirimOrani = 0;
 
         // Elementler
         const sepetButon = document.getElementById('sepetButon');
@@ -396,36 +440,59 @@
         const kuponKoduGirdisi = document.getElementById('kuponKodu');
         const kuponUygulaBtn = document.getElementById('kuponUygulaBtn');
         
-        // Modal Elementleri
-        const detayModal = document.getElementById('detayModal');
-        const modalKapat = document.getElementById('modalKapat');
-        const modalResim = document.getElementById('modalResim');
-        const modalBaslik = document.getElementById('modalBaslik');
-        const modalAciklama = document.getElementById('modalAciklama');
-        const modalFiyat = document.getElementById('modalFiyat');
+        // Sipariş Modalları
+        const satinalBtn = document.getElementById('satinalBtn');
+        const siparisModal = document.getElementById('siparisModal');
+        const siparisModalKapat = document.getElementById('siparisModalKapat');
 
-        // Sepet Aç/Kapat
+        // Modalları Açma Kapama
         sepetButon.addEventListener('click', () => sepetPaneli.classList.add('acik'));
         sepetKapat.addEventListener('click', () => sepetPaneli.classList.remove('acik'));
 
-        // DETAY PENCERESİNİ AÇMA SİSTEMİ
+        satinalBtn.addEventListener('click', () => {
+            if(sepet.length === 0) {
+                alert("❌ Sepetiniz boş! Önce ürün ekleyin.");
+                return;
+            }
+            sepetPaneli.classList.remove('acik'); // Sepeti kapat
+            siparisModal.style.display = "flex"; // Sipariş formunu aç
+        });
+
+        siparisModalKapat.addEventListener('click', () => siparisModal.style.display = "none");
+
+        // SİPARİŞİ TAMAMLAMA FONKSİYONU
+        function siparişiTamamla(event) {
+            event.preventDefault(); // Sayfanın yenilenmesini engelle
+            
+            // Rastgele Sipariş Numarası üret
+            const siparisNo = Math.floor(100000 + Math.random() * 900000);
+            
+            alert(`🎉 Harika! Siparişiniz başarıyla alındı.\n📦 Sipariş Numaranız: #KAYRA-${siparisNo}\nBizi tercih ettiğiniz için teşekkürler!`);
+            
+            // Sepeti sıfırla
+            sepet = [];
+            anaToplam = 0;
+            indirimOrani = 0;
+            kuponKoduGirdisi.value = "";
+            guncelleSepetEkranı();
+            
+            siparisModal.style.display = "none";
+        }
+
+        // DİĞER FONKSİYONLAR (Önceki Adımlardan)
         document.querySelectorAll('.kart-tikla').forEach(kart => {
             kart.addEventListener('click', function(e) {
-                // Eğer sepete ekle butonuna basıldıysa detay penceresini açma
                 if(e.target.classList.contains('urun-ekle')) return;
-
-                modalBaslik.innerText = this.getAttribute('data-ad');
-                modalAciklama.innerText = this.getAttribute('data-detay');
-                modalResim.src = this.getAttribute('data-resim');
-                modalFiyat.innerText = this.querySelector('.fiyat').innerText;
-                detayModal.style.display = "flex";
+                document.getElementById('modalBaslik').innerText = this.getAttribute('data-ad');
+                document.getElementById('modalAciklama').innerText = this.getAttribute('data-detay');
+                document.getElementById('modalResim').src = this.getAttribute('data-resim');
+                document.getElementById('modalFiyat').innerText = this.querySelector('.fiyat').innerText;
+                document.getElementById('detayModal').style.display = "flex";
             });
         });
 
-        modalKapat.addEventListener('click', () => detayModal.style.display = "none");
-        window.addEventListener('click', (e) => { if(e.target == detayModal) detayModal.style.display = "none"; });
+        document.getElementById('modalKapat').addEventListener('click', () => document.getElementById('detayModal').style.display = "none");
 
-        // SEPETE ÜRÜN EKLEME
         document.querySelectorAll('.urun-ekle').forEach(buton => {
             buton.addEventListener('click', function() {
                 const urunAd = this.getAttribute('data-ad');
@@ -434,7 +501,6 @@
                 anaToplam += urunFiyat;
                 guncelleSepetEkranı();
                 
-                // Bildirim göster
                 const bKutusu = document.getElementById('bildirimKutusu');
                 bKutusu.classList.add('goster');
                 setTimeout(() => bKutusu.classList.remove('goster'), 1500);
@@ -447,44 +513,34 @@
             guncelleSepetEkranı();
         }
 
-        // İNDİRİM KUPONU SİSTEMİ
         kuponUygulaBtn.addEventListener('click', () => {
-            const kod = kuponKoduGirdisi.value.trim().toUpperCase();
-            if(kod === "KAYRA20") {
-                indirimOrani = 0.20; // %20 İndirim
-                alert("🎉 'KAYRA20' Kuponu Başarıyla Uygulandı! %20 İndirim Kazandınız.");
+            if(kuponKoduGirdisi.value.trim().toUpperCase() === "KAYRA20") {
+                indirimOrani = 0.20;
+                alert("🎉 %20 İndirim Uygulandı!");
                 guncelleSepetEkranı();
             } else {
-                alert("❌ Geçersiz Kupon Kodu!");
+                alert("❌ Geçersiz Kupon!");
             }
         });
 
         function guncelleSepetEkranı() {
             sepetSayac.innerText = sepet.length;
-            
-            // Fiyat Hesaplama
             let indirimMiktari = anaToplam * indirimOrani;
             let sonFiyat = anaToplam - indirimMiktari;
-
             indirimMiktariEtiketi.innerText = "-" + indirimMiktari.toLocaleString('tr-TR') + " TL";
             toplamFiyatEtiketi.innerText = sonFiyat.toLocaleString('tr-TR') + " TL";
-
             sepetUrunlerKutusu.innerHTML = "";
             sepet.forEach((urun, index) => {
                 const satir = document.createElement('div');
                 satir.className = 'sepet-urun-satir';
                 satir.innerHTML = `
-                    <div>
-                        <span>${urun.ad}</span><br>
-                        <small style="color:#2563eb;">${urun.fiyat.toLocaleString('tr-TR')} TL</small>
-                    </div>
+                    <div><span>${urun.ad}</span><br><small style="color:#2563eb;">${urun.fiyat.toLocaleString('tr-TR')} TL</small></div>
                     <button style="background:#ef4444; color:white; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;" onclick="urunSil(${index})">Sil</button>
                 `;
                 sepetUrunlerKutusu.appendChild(satir);
             });
         }
 
-        // TEMA VE ARAMA SİSTEMİ (ÖNCEKİLER)
         document.getElementById('temaButon').addEventListener('click', function() {
             if (document.documentElement.getAttribute('data-theme') === 'dark') {
                 document.documentElement.removeAttribute('data-theme');
