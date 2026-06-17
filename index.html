@@ -1,27 +1,90 @@
 <html>
 <head>
-    <title>Kayra Tech Shop - Tam Fonksiyonlu Mağaza</title>
+    <title>Kayra Tech Shop - Full Fonksiyon Mağaza</title>
     <style>
+        /* ANA DEĞİŞKENLER (Gece modu için renk ayarları) */
+        :root {
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --card-bg: white;
+            --header-bg: #1e293b;
+            --border-color: #cbd5e1;
+        }
+
+        /* KARANLIK MOD AKTİFKEN KULLANILACAK RENKLER */
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --header-bg: #020617;
+            --border-color: #475569;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+            background-color: var(--bg-color);
             margin: 0;
             padding: 0;
-            color: #333;
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
         }
 
         header {
-            background-color: #1e293b;
+            background-color: var(--header-bg);
             color: white;
             text-align: center;
             padding: 30px 10px;
             position: relative;
+            transition: background-color 0.3s;
         }
 
         header h1 {
             margin: 0;
             font-size: 2.5rem;
             letter-spacing: 2px;
+        }
+
+        /* GECE/GÜNDÜZ MODU BUTONU */
+        .tema-butonu {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            background-color: #475569;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .tema-butonu:hover {
+            background-color: #334155;
+        }
+
+        .arama-kapsayici {
+            margin: 20px auto 0 auto;
+            max-width: 500px;
+            padding: 0 20px;
+        }
+
+        .arama-kutusu {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            outline: none;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            transition: border-color 0.2s, background-color 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .arama-kutusu:focus {
+            border-color: #2563eb;
         }
 
         .bildirim-kutusu {
@@ -67,9 +130,10 @@
             right: -350px;
             width: 300px;
             height: 100%;
-            background-color: white;
+            background-color: var(--card-bg);
+            color: var(--text-color);
             box-shadow: -4px 0 10px rgba(0,0,0,0.15);
-            transition: right 0.3s ease;
+            transition: right 0.3s ease, background-color 0.3s;
             z-index: 1000;
             padding: 25px;
             display: flex;
@@ -84,7 +148,7 @@
             text-align: right;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #666;
+            color: var(--text-color);
         }
 
         .sepet-urunler {
@@ -98,11 +162,10 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border-color);
             font-size: 0.95rem;
         }
 
-        /* SİLME BUTONU STİLİ */
         .urun-sil-btn {
             background-color: #ef4444;
             color: white;
@@ -112,11 +175,6 @@
             cursor: pointer;
             font-size: 0.8rem;
             font-weight: bold;
-            transition: background 0.2s;
-        }
-
-        .urun-sil-btn:hover {
-            background-color: #dc2626;
         }
 
         .toplam-alan {
@@ -137,7 +195,7 @@
         h2 {
             border-bottom: 2px solid #1e293b;
             padding-bottom: 10px;
-            color: #1e293b;
+            color: var(--text-color);
         }
 
         .urun-listesi {
@@ -149,12 +207,16 @@
         }
 
         .urun-kart {
-            background-color: white;
+            background-color: var(--card-bg);
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             width: 280px;
             overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+        }
+
+        .urun-kart.gizle {
+            display: none !important;
         }
 
         .urun-kart:hover {
@@ -184,6 +246,10 @@
             margin: 0 0 15px 0;
         }
 
+        [data-theme="dark"] .urun-detay p {
+            color: #94a3b8;
+        }
+
         .fiyat {
             font-size: 1.3rem;
             color: #2563eb;
@@ -200,13 +266,8 @@
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
-            transition: background-color 0.2s;
             cursor: pointer;
             user-select: none;
-        }
-
-        .buton:hover {
-            background-color: #1d4ed8;
         }
 
         footer {
@@ -226,9 +287,15 @@
     </div>
 
     <header>
+        <div class="tema-butonu" id="temaButon">🌙 Gece Modu</div>
+        
         <h1>⚡ KAYRA TECH SHOP</h1>
         <p>Geleceğin Teknolojisi, Bugün Kapınızda</p>
         <div class="sepet-butonu" id="sepetButon">🛒 Sepetim (<span id="sepetSayac">0</span>)</div>
+        
+        <div class="arama-kapsayici">
+            <input type="text" id="aramaKutusu" class="arama-kutusu" placeholder="🔍 Alışverişe başla, ürün ara...">
+        </div>
     </header>
 
     <div class="sepet-paneli" id="sepetPaneli">
@@ -245,7 +312,6 @@
         <h2>🔥 Haftanın Trend Ürünleri</h2>
         
         <div class="urun-listesi">
-
             <div class="urun-kart">
                 <img src="https://picsum.photos/id/0/300/200" alt="Laptop">
                 <div class="urun-detay">
@@ -275,7 +341,6 @@
                     <div class="buton urun-ekle" data-ad="ANC Kulaklık" data-fiyat="5400">🛒 Sepete Ekle</div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -296,43 +361,52 @@
         const toplamFiyatEtiketi = document.getElementById('toplamFiyat');
         const eklemeButonlari = document.querySelectorAll('.urun-ekle');
         const bildirimKutusu = document.getElementById('bildirimKutusu');
+        const aramaKutusu = document.getElementById('aramaKutusu');
+        const urunKartlari = document.querySelectorAll('.urun-kart');
+        
+        // Tema elemanları
+        const temaButon = document.getElementById('temaButon');
 
         sepetButon.addEventListener('click', () => sepetPaneli.classList.add('acik'));
         sepetKapat.addEventListener('click', () => sepetPaneli.classList.remove('acik'));
+
+        // AKILLI GECE/GÜNDÜZ MODU SİSTEMİ
+        temaButon.addEventListener('click', () => {
+            const mevcutTema = document.documentElement.getAttribute('data-theme');
+            
+            if (mevcutTema === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                temaButon.innerText = "🌙 Gece Modu";
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                temaButon.innerText = "☀️ Gündüz Modu";
+            }
+        });
 
         eklemeButonlari.forEach(buton => {
             buton.addEventListener('click', function() {
                 const urunAd = this.getAttribute('data-ad');
                 const urunFiyat = parseInt(this.getAttribute('data-fiyat'));
-
                 sepet.push({ ad: urunAd, fiyat: urunFiyat });
                 toplam += urunFiyat;
-
                 guncelleSepetEkranı();
                 bildirimGoster();
             });
         });
 
-        // ÜRÜN SİLME FONKSİYONU
         function urunSil(index) {
-            // Silinecek ürünün fiyatını toplamdan düşüyoruz
             toplam -= sepet[index].fiyat;
-            // Ürünü sepet dizisinden çıkartıyoruz
             sepet.splice(index, 1);
-            
-            // Ekranı yeniden güncelliyoruz
             guncelleSepetEkranı();
         }
 
         function guncelleSepetEkranı() {
             sepetSayac.innerText = sepet.length;
             toplamFiyatEtiketi.innerText = toplam.toLocaleString('tr-TR') + " TL";
-
             sepetUrunlerKutusu.innerHTML = "";
             sepet.forEach((urun, index) => {
                 const satir = document.createElement('div');
                 satir.className = 'sepet-urun-satir';
-                // Her ürünün yanına "Sil" butonu ekliyoruz ve ona tıklayınca hangi sıradaki ürünse onu sildiriyoruz
                 satir.innerHTML = `
                     <div>
                         <span>${urun.ad}</span><br>
@@ -350,7 +424,18 @@
                 bildirimKutusu.classList.remove('goster');
             }, 2000);
         }
-    </script>
 
+        aramaKutusu.addEventListener('input', function() {
+            const arananKelime = this.value.toLowerCase().trim();
+            urunKartlari.forEach(kart => {
+                const urunAdi = kart.querySelector('h3').innerText.toLowerCase();
+                if (urunAdi.includes(arananKelime)) {
+                    kart.classList.remove('gizle');
+                } else {
+                    kart.classList.add('gizle');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
