@@ -1,8 +1,7 @@
 <html>
 <head>
-    <title>Kayra Tech Shop - Full Fonksiyon Mağaza</title>
+    <title>Kayra Tech Shop - Gelişmiş Mağaza</title>
     <style>
-        /* ANA DEĞİŞKENLER (Gece modu için renk ayarları) */
         :root {
             --bg-color: #f4f7f6;
             --text-color: #333;
@@ -11,7 +10,6 @@
             --border-color: #cbd5e1;
         }
 
-        /* KARANLIK MOD AKTİFKEN KULLANILACAK RENKLER */
         [data-theme="dark"] {
             --bg-color: #0f172a;
             --text-color: #f1f5f9;
@@ -44,7 +42,6 @@
             letter-spacing: 2px;
         }
 
-        /* GECE/GÜNDÜZ MODU BUTONU */
         .tema-butonu {
             position: absolute;
             top: 30px;
@@ -57,11 +54,19 @@
             font-weight: bold;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             user-select: none;
-            transition: background 0.2s;
         }
 
-        .tema-butonu:hover {
-            background-color: #334155;
+        .sepet-butonu {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            background-color: #2563eb;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .arama-kapsayici {
@@ -79,51 +84,10 @@
             outline: none;
             background-color: var(--card-bg);
             color: var(--text-color);
-            transition: border-color 0.2s, background-color 0.3s;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         }
 
-        .arama-kutusu:focus {
-            border-color: #2563eb;
-        }
-
-        .bildirim-kutusu {
-            position: fixed;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #10b981;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-weight: bold;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 2000;
-        }
-
-        .bildirim-kutusu.goster {
-            top: 20px;
-        }
-
-        .sepet-butonu {
-            position: absolute;
-            top: 30px;
-            right: 40px;
-            background-color: #2563eb;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background 0.2s;
-        }
-
-        .sepet-butonu:hover {
-            background-color: #1d4ed8;
-        }
-
+        /* SEPET PANELİ VE KUPON ALANI */
         .sepet-paneli {
             position: fixed;
             top: 0;
@@ -133,7 +97,7 @@
             background-color: var(--card-bg);
             color: var(--text-color);
             box-shadow: -4px 0 10px rgba(0,0,0,0.15);
-            transition: right 0.3s ease, background-color 0.3s;
+            transition: right 0.3s ease;
             z-index: 1000;
             padding: 25px;
             display: flex;
@@ -148,7 +112,6 @@
             text-align: right;
             font-size: 1.5rem;
             cursor: pointer;
-            color: var(--text-color);
         }
 
         .sepet-urunler {
@@ -163,39 +126,90 @@
             align-items: center;
             padding: 10px 0;
             border-bottom: 1px solid var(--border-color);
-            font-size: 0.95rem;
         }
 
-        .urun-sil-btn {
-            background-color: #ef4444;
+        .kupon-alani {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .kupon-girdi {
+            width: 70%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .kupon-btn {
+            width: 25%;
+            padding: 8px;
+            background: #10b981;
             color: white;
             border: none;
-            padding: 3px 8px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 0.8rem;
             font-weight: bold;
         }
 
         .toplam-alan {
-            border-top: 2px solid #1e293b;
+            border-top: 2px solid var(--border-color);
             padding-top: 15px;
             font-size: 1.2rem;
             font-weight: bold;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        /* POPUP / MODAL (ÜRÜN DETAY PENCERESİ) */
+        .modal-arka-plan {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-icerik {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+            position: relative;
+            text-align: center;
+        }
+
+        .modal-kapat {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-icerik img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
         }
 
         .container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 0 20px;
-        }
-
-        h2 {
-            border-bottom: 2px solid #1e293b;
-            padding-bottom: 10px;
-            color: var(--text-color);
         }
 
         .urun-listesi {
@@ -212,7 +226,8 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             width: 280px;
             overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
         }
 
         .urun-kart.gizle {
@@ -234,22 +249,6 @@
             padding: 20px;
         }
 
-        .urun-detay h3 {
-            margin: 0 0 10px 0;
-            font-size: 1.2rem;
-        }
-
-        .urun-detay p {
-            font-size: 0.9rem;
-            color: #666;
-            height: 40px;
-            margin: 0 0 15px 0;
-        }
-
-        [data-theme="dark"] .urun-detay p {
-            color: #94a3b8;
-        }
-
         .fiyat {
             font-size: 1.3rem;
             color: #2563eb;
@@ -263,11 +262,27 @@
             color: white;
             text-align: center;
             padding: 10px;
-            text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
-            user-select: none;
+        }
+
+        .bildirim-kutusu {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #10b981;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: top 0.4s;
+            z-index: 4000;
+        }
+
+        .bildirim-kutusu.goster {
+            top: 20px;
         }
 
         footer {
@@ -276,7 +291,6 @@
             text-align: center;
             padding: 20px 10px;
             margin-top: 50px;
-            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -286,9 +300,18 @@
         ✅ Ürün başarıyla sepetinize eklendi!
     </div>
 
+    <div class="modal-arka-plan" id="detayModal">
+        <div class="modal-icerik">
+            <span class="modal-kapat" id="modalKapat">❌</span>
+            <img id="modalResim" src="" alt="">
+            <h3 id="modalBaslik">Ürün Adı</h3>
+            <p id="modalAciklama">Detaylar...</p>
+            <div class="fiyat" id="modalFiyat">0 TL</div>
+        </div>
+    </div>
+
     <header>
         <div class="tema-butonu" id="temaButon">🌙 Gece Modu</div>
-        
         <h1>⚡ KAYRA TECH SHOP</h1>
         <p>Geleceğin Teknolojisi, Bugün Kapınızda</p>
         <div class="sepet-butonu" id="sepetButon">🛒 Sepetim (<span id="sepetSayac">0</span>)</div>
@@ -300,109 +323,152 @@
 
     <div class="sepet-paneli" id="sepetPaneli">
         <div class="sepet-kapat" id="sepetKapat">❌</div>
-        <h3>🛒 Sepetinizdeki Ürünler</h3>
+        <h3>🛒 Sepetiniz</h3>
         <div class="sepet-urunler" id="sepetUrunler"></div>
+        
+        <div class="kupon-alani">
+            <input type="text" id="kuponKodu" class="kupon-girdi" placeholder="Kupon Kodu (KAYRA20)">
+            <button id="kuponUygulaBtn" class="kupon-btn">Ekle</button>
+        </div>
+
         <div class="toplam-alan">
-            <span>Toplam:</span>
-            <span id="toplamFiyat">0 TL</span>
+            <div style="display:flex; justify-content:space-between; font-size: 0.9rem; color:#888;" id="indirimSatiri">
+                <span>İndirim:</span>
+                <span id="indirimMiktari">0 TL</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+                <span>Toplam:</span>
+                <span id="toplamFiyat">0 TL</span>
+            </div>
         </div>
     </div>
 
     <div class="container">
-        <h2>🔥 Haftanın Trend Ürünleri</h2>
+        <h2>🔥 Haftanın Trend Ürünleri (Detay için ürüne tıkla!)</h2>
         
         <div class="urun-listesi">
-            <div class="urun-kart">
+            <div class="urun-kart kart-tikla" data-ad="Pro Gaming Laptop" data-detay="Intel i9 işlemci, RTX 4090 Ekran Kartı, 32GB DDR5 RAM ve 1TB NVMe SSD ile oyunlarda maksimum FPS garanti!" data-resim="https://picsum.photos/id/0/400/300">
                 <img src="https://picsum.photos/id/0/300/200" alt="Laptop">
                 <div class="urun-detay">
                     <h3>Pro Gaming Laptop</h3>
-                    <p>RTX Ekran kartlı, 32GB RAM'li hız canavarı.</p>
                     <div class="fiyat">45.999 TL</div>
                     <div class="buton urun-ekle" data-ad="Pro Gaming Laptop" data-fiyat="45999">🛒 Sepete Ekle</div>
                 </div>
             </div>
 
-            <div class="urun-kart">
+            <div class="urun-kart kart-tikla" data-ad="Ultra Smart Phone" data-detay="200 Megapiksel yapay zeka destekli kamera, 120Hz AMOLED ekran, 5000 mAh batarya ve 120W süper hızlı şarj desteği." data-resim="https://picsum.photos/id/160/400/300">
                 <img src="https://picsum.photos/id/160/300/200" alt="Telefon">
                 <div class="urun-detay">
                     <h3>Ultra Smart Phone</h3>
-                    <p>200 MP kameralı, yapay zekalı amiral gemisi.</p>
                     <div class="fiyat">38.500 TL</div>
                     <div class="buton urun-ekle" data-ad="Ultra Smart Phone" data-fiyat="38500">🛒 Sepete Ekle</div>
                 </div>
             </div>
 
-            <div class="urun-kart">
+            <div class="urun-kart kart-tikla" data-ad="ANC Kulaküstü Kulaklık" data-detay="Yüksek çözünürlüklü ses kalitesi, hibrit aktif gürültü engelleme (ANC), şeffaf mod ve tek şarjla 60 saate varan müzik keyfi." data-resim="https://picsum.photos/id/48/400/300">
                 <img src="https://picsum.photos/id/48/300/200" alt="Kulaklık">
                 <div class="urun-detay">
                     <h3>ANC Kulaküstü Kulaklık</h3>
-                    <p>Aktif gürültü engelleyici ve 60 saat pil ömrü.</p>
                     <div class="fiyat">5.400 TL</div>
-                    <div class="buton urun-ekle" data-ad="ANC Kulaklık" data-fiyat="5400">🛒 Sepete Ekle</div>
+                    <div class="buton urun-ekle" data-ad="ANC Kulaküstü Kulaklık" data-fiyat="5400">🛒 Sepete Ekle</div>
                 </div>
             </div>
         </div>
     </div>
 
     <footer>
-        <p>📍 Merkez: Teknoloji Vadisi, No: 41 | 📞 İletişim: info@kayratech.com</p>
         <p>© 2026 Kayra Tech Shop. Tüm Hakları Saklıdır.</p>
     </footer>
 
     <script>
         let sepet = [];
-        let toplam = 0;
+        let anaToplam = 0;
+        let indirimOrani = 0; // % olarak tutulacak
 
+        // Elementler
         const sepetButon = document.getElementById('sepetButon');
         const sepetPaneli = document.getElementById('sepetPaneli');
         const sepetKapat = document.getElementById('sepetKapat');
         const sepetUrunlerKutusu = document.getElementById('sepetUrunler');
         const sepetSayac = document.getElementById('sepetSayac');
         const toplamFiyatEtiketi = document.getElementById('toplamFiyat');
-        const eklemeButonlari = document.querySelectorAll('.urun-ekle');
-        const bildirimKutusu = document.getElementById('bildirimKutusu');
-        const aramaKutusu = document.getElementById('aramaKutusu');
-        const urunKartlari = document.querySelectorAll('.urun-kart');
+        const indirimMiktariEtiketi = document.getElementById('indirimMiktari');
+        const kuponKoduGirdisi = document.getElementById('kuponKodu');
+        const kuponUygulaBtn = document.getElementById('kuponUygulaBtn');
         
-        // Tema elemanları
-        const temaButon = document.getElementById('temaButon');
+        // Modal Elementleri
+        const detayModal = document.getElementById('detayModal');
+        const modalKapat = document.getElementById('modalKapat');
+        const modalResim = document.getElementById('modalResim');
+        const modalBaslik = document.getElementById('modalBaslik');
+        const modalAciklama = document.getElementById('modalAciklama');
+        const modalFiyat = document.getElementById('modalFiyat');
 
+        // Sepet Aç/Kapat
         sepetButon.addEventListener('click', () => sepetPaneli.classList.add('acik'));
         sepetKapat.addEventListener('click', () => sepetPaneli.classList.remove('acik'));
 
-        // AKILLI GECE/GÜNDÜZ MODU SİSTEMİ
-        temaButon.addEventListener('click', () => {
-            const mevcutTema = document.documentElement.getAttribute('data-theme');
-            
-            if (mevcutTema === 'dark') {
-                document.documentElement.removeAttribute('data-theme');
-                temaButon.innerText = "🌙 Gece Modu";
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                temaButon.innerText = "☀️ Gündüz Modu";
-            }
+        // DETAY PENCERESİNİ AÇMA SİSTEMİ
+        document.querySelectorAll('.kart-tikla').forEach(kart => {
+            kart.addEventListener('click', function(e) {
+                // Eğer sepete ekle butonuna basıldıysa detay penceresini açma
+                if(e.target.classList.contains('urun-ekle')) return;
+
+                modalBaslik.innerText = this.getAttribute('data-ad');
+                modalAciklama.innerText = this.getAttribute('data-detay');
+                modalResim.src = this.getAttribute('data-resim');
+                modalFiyat.innerText = this.querySelector('.fiyat').innerText;
+                detayModal.style.display = "flex";
+            });
         });
 
-        eklemeButonlari.forEach(buton => {
+        modalKapat.addEventListener('click', () => detayModal.style.display = "none");
+        window.addEventListener('click', (e) => { if(e.target == detayModal) detayModal.style.display = "none"; });
+
+        // SEPETE ÜRÜN EKLEME
+        document.querySelectorAll('.urun-ekle').forEach(buton => {
             buton.addEventListener('click', function() {
                 const urunAd = this.getAttribute('data-ad');
                 const urunFiyat = parseInt(this.getAttribute('data-fiyat'));
                 sepet.push({ ad: urunAd, fiyat: urunFiyat });
-                toplam += urunFiyat;
+                anaToplam += urunFiyat;
                 guncelleSepetEkranı();
-                bildirimGoster();
+                
+                // Bildirim göster
+                const bKutusu = document.getElementById('bildirimKutusu');
+                bKutusu.classList.add('goster');
+                setTimeout(() => bKutusu.classList.remove('goster'), 1500);
             });
         });
 
         function urunSil(index) {
-            toplam -= sepet[index].fiyat;
+            anaToplam -= sepet[index].fiyat;
             sepet.splice(index, 1);
             guncelleSepetEkranı();
         }
 
+        // İNDİRİM KUPONU SİSTEMİ
+        kuponUygulaBtn.addEventListener('click', () => {
+            const kod = kuponKoduGirdisi.value.trim().toUpperCase();
+            if(kod === "KAYRA20") {
+                indirimOrani = 0.20; // %20 İndirim
+                alert("🎉 'KAYRA20' Kuponu Başarıyla Uygulandı! %20 İndirim Kazandınız.");
+                guncelleSepetEkranı();
+            } else {
+                alert("❌ Geçersiz Kupon Kodu!");
+            }
+        });
+
         function guncelleSepetEkranı() {
             sepetSayac.innerText = sepet.length;
-            toplamFiyatEtiketi.innerText = toplam.toLocaleString('tr-TR') + " TL";
+            
+            // Fiyat Hesaplama
+            let indirimMiktari = anaToplam * indirimOrani;
+            let sonFiyat = anaToplam - indirimMiktari;
+
+            indirimMiktariEtiketi.innerText = "-" + indirimMiktari.toLocaleString('tr-TR') + " TL";
+            toplamFiyatEtiketi.innerText = sonFiyat.toLocaleString('tr-TR') + " TL";
+
             sepetUrunlerKutusu.innerHTML = "";
             sepet.forEach((urun, index) => {
                 const satir = document.createElement('div');
@@ -412,28 +478,29 @@
                         <span>${urun.ad}</span><br>
                         <small style="color:#2563eb;">${urun.fiyat.toLocaleString('tr-TR')} TL</small>
                     </div>
-                    <button class="urun-sil-btn" onclick="urunSil(${index})">Sil</button>
+                    <button style="background:#ef4444; color:white; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;" onclick="urunSil(${index})">Sil</button>
                 `;
                 sepetUrunlerKutusu.appendChild(satir);
             });
         }
 
-        function bildirimGoster() {
-            bildirimKutusu.classList.add('goster');
-            setTimeout(() => {
-                bildirimKutusu.classList.remove('goster');
-            }, 2000);
-        }
+        // TEMA VE ARAMA SİSTEMİ (ÖNCEKİLER)
+        document.getElementById('temaButon').addEventListener('click', function() {
+            if (document.documentElement.getAttribute('data-theme') === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                this.innerText = "🌙 Gece Modu";
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                this.innerText = "☀️ Gündüz Modu";
+            }
+        });
 
-        aramaKutusu.addEventListener('input', function() {
+        document.getElementById('aramaKutusu').addEventListener('input', function() {
             const arananKelime = this.value.toLowerCase().trim();
-            urunKartlari.forEach(kart => {
+            document.querySelectorAll('.urun-kart').forEach(kart => {
                 const urunAdi = kart.querySelector('h3').innerText.toLowerCase();
-                if (urunAdi.includes(arananKelime)) {
-                    kart.classList.remove('gizle');
-                } else {
-                    kart.classList.add('gizle');
-                }
+                if (urunAdi.includes(arananKelime)) kart.classList.remove('gizle');
+                else kart.classList.add('gizle');
             });
         });
     </script>
